@@ -1,10 +1,11 @@
-let startButton = document.querySelector('#start-button');
-let quizContainer = document.querySelector('.quiz-container');
-let timerEl = document.querySelector('#time');
+let startButton = document.querySelector('#start-button'); // setting startButton to have the value of css id start-button
+let quizContainer = document.querySelector('.quiz-container'); // setting quizContainer to have the value of css class quiz-container
+let timerEl = document.querySelector('.time'); // setting timerEl to have the value of css class time
 
 // GLOBAL VARIABLES
 let timerInterval;
 let secondsLeft;
+let scoreCounter = 0;
 
 
 const quizQuestions = [
@@ -21,15 +22,23 @@ const quizQuestions = [
     // Add more answers...
   ];
   
+  function gameOver() {
+    quizContainer.textContent = "All Done!";
+
+  }
+
   function initializeTimer() {
-    secondsLeft = 75;
+    secondsLeft = 5;
 
     if (!timerInterval) {
         timerInterval = setInterval(function () {
             secondsLeft--;
             timerEl.textContent = secondsLeft;
             if (secondsLeft <= 0) {
-                endQuiz();
+              //stops execution of action at set interval
+                clearInterval(timerInterval);
+                //calls function to create and append message
+                gameOver();
             }
         }, 1000);
     }
@@ -38,10 +47,10 @@ const quizQuestions = [
 startButton.addEventListener('click', startQuiz);
 
 function startQuiz() {
-  // Hide the start button
+  // Hide the start button when the button is clicked and then... V
   startButton.style.display = 'none';
 
-  // Call a function to render the first question
+  // Call a function to render the first question... and V
   renderQuestion(0);
 
    // Start the timer

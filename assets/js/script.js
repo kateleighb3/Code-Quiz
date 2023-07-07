@@ -1,102 +1,209 @@
-let startButton = document.querySelector('#start-button'); // setting startButton to have the value of css id start-button
-let quizContainer = document.querySelector('.quiz-container'); // setting quizContainer to have the value of css class quiz-container
-let timerEl = document.querySelector('.time'); // setting timerEl to have the value of css class time
-
-// GLOBAL VARIABLES
-let timerInterval;
-let secondsLeft;
-let scoreCounter = 0;
-
-
-const quizQuestions = [
-    'Commonly used data types DO NOT include:',
-    'The condition in an if/else statement is enclosed with______',
-    'Arrays in JavaScript can be used to store',
-    // Add more questions...
-  ];
-  
-  const quizAnswers = [
-    [['1. strings', false], ['2.alerts', true], ['3. booleans', false], ['4. numbers', false]],
-    [['1. curly brackets', true], ['2. quotes', false], ['3. parenthesis', false], ['4. square brackets', false]],
-    [['1. numbers and strings', false], ['2. other arrays', false], ['3. booleans', false], ['4. all of the above',true]],
-    // Add more answers...
-  ];
-  
-  function gameOver() {
-    quizContainer.textContent = "All Done!";
-
+var questions = [
+  {
+      title: "Commonly used data types DO NOT include:",
+      choices: ["strings", "booleans", "alerts", "numbers"],
+      answer: "alerts"
+  },
+  {
+      title: "The condition in an if / else statement is enclosed within ____.",
+      choices: ["quotes", "braces", "parentheses", "brackets"],
+      answer: "parentheses"
+  },
+  {
+      title: "What tag defines the body of the HTML document, and usually includes all the contents such as the text, hyperlinks, images, tables, lists, and more?",
+      choices: ["<head></head>", "<body></body>", "<title></title>", "<br>"],
+      answer: "<body></body>"
+  },
+  {
+      title: "What tag is used to define a hyperlink, or link to another page?",
+      choices: ["<strong>", "<blockquote>", "<em>", "<a>"],
+      answer: "<a>"
+  },
+  {
+      title: "CSS stands for ____ Style Sheets.",
+      choices: ["Curious", "Concept", "Cascading", "Concave"],
+      answer: "Cascading"
   }
+];
 
-  function initializeTimer() {
-    secondsLeft = 5;
 
-    if (!timerInterval) {
-        timerInterval = setInterval(function () {
-            secondsLeft--;
-            timerEl.textContent = secondsLeft;
-            if (secondsLeft <= 0) {
-              //stops execution of action at set interval
-                clearInterval(timerInterval);
-                //calls function to create and append message
-                gameOver();
-            }
-        }, 1000);
-    }
+var totalTime = 59;
+var startButton = document.querySelector("#start-button");
+var count = 0;
+var totalPoints = 0;
+var scoreH1 = document.querySelector("#score");
+var lastQ = false;
+var submitBtn = document.querySelector("#submit");
+var highscore;
+var highscoreBtn = document.querySelector("#highscores");
+var scoresDiv = document.querySelector("#scoresDiv");
+
+submitBtn.addEventListener("click", function () {
+if (localStorage.getItem("Highscore") === null) {
+  localStorage.setItem("Highscore", JSON.stringify({
+    highscore: 0,
+    highscoreArr: []
+  }));
 }
 
-startButton.addEventListener('click', startQuiz);
+var input = document.querySelector("#initials").value;
+var score = totalPoints + totalTime;
+var allscores = JSON.parse(localStorage.getItem("Highscore")).highscoreArr;
 
-function startQuiz() {
-  // Hide the start button when the button is clicked and then... V
-  startButton.style.display = 'none';
+if (score > highscore) {
+  highscore = score;
+}
+allscores.push(input + score);
+localStorage.setItem('Highscore', JSON.stringify({
+  highscore,
+  highscoreArr: allscores
+}));
 
-  // Call a function to render the first question... and V
-  renderQuestion(0);
 
-   // Start the timer
-   initializeTimer();
+startAgain();
+});
+
+
+var startOverScreen = document.querySelector("#startOver");
+var restartBtn = document.querySelector("#restart");
+
+function startAgain() {
+endQuiz.style.display = "none";
+startOverScreen.style.display = "block";
 }
 
-function renderQuestion(index) {
-    // Get the current question and answer options based on the index
-    const question = quizQuestions[index];
-    const answers = quizAnswers[index];
-  
-    // Clear the quiz container
-    quizContainer.innerHTML = '';
-  
-    // Create HTML elements to display the question and answer options
-    const questionElement = document.createElement('h2');
-    questionElement.textContent = question;
-  
-    const optionsElement = document.createElement('ul');
-    optionsElement.classList.add('options');
-  
-    // Iterate over the answer options and create list items
-    for (let i = 0; i < answers.length; i++) {
-      const answer = answers[i][0];
-      const isCorrect = answers[i][1];
-  
-      const listItem = document.createElement('li');
-      listItem.textContent = answer;
-  
-      // Add a click event listener to each option to handle the user's choice
-      listItem.addEventListener('click', function () {
-        if (isCorrect) {
-          // Handle correct answer
-        } else {
-          // Handle wrong answer
-        }
-  
-        // Move to the next question
-        renderQuestion(index + 1);
-      });
-  
-      optionsElement.appendChild(listItem);
-    }
-  
-    // Append the question and options to the quiz container
-    quizContainer.appendChild(questionElement);
-    quizContainer.appendChild(optionsElement);
+restartBtn.addEventListener("click", function () {
+totalTime = 59;
+count = 0;
+totalPoints = 0;
+lastQ = false;
+startDiv.style.display = "block";
+quizDiv.style.display = "none";
+startOverScreen.style.display = "none";
+});
+
+endGame = () => {
+lastQ = true;
+quizDiv.style.display = "none";
+endQuiz.style.display = "block";
+var score = totalPoints + totalTime;
+scoreH1.textContent = score;
+};
+
+answeredRight = () => {
+  var footer = document.querySelector(".card-footer");
+  footer.textContent = "Correct!";
+  totalPoints += 10;
+  console.log(highscore);
+count++;
+setTimeout(()=> {
+  footer.textContent=""; 
+}, 2000); //clear the footer after 2 seconds
+if (count === questions.length) {
+  endGame();
+} else {
+  generateQuestions();
+}
+};
+
+answeredWrong = () => {
+  var footer = document.querySelector(".card-footer");
+  footer.textContent="Wrong";
+  totalPoints -= 5;
+count++;
+totalTime -= 10;
+setTimeout(()=> {
+  footer.textContent=""; 
+}, 2000); //clear the footer after 2 seconds
+if (count === questions.length) {
+  endGame();
+} else {
+  generateQuestions();
   }
-  
+};  
+
+generateQuestions = () => {
+document.getElementById("quizQ-header").innerHTML = questions[count].title; 
+document.getElementById("choiceButtons").innerHTML = ""; 
+
+questions[count].choices.map((choice, i) => { 
+  var btn = document.createElement("button"); 
+  var textnode = document.createTextNode(choice); 
+  btn.appendChild(textnode); 
+  document.getElementById("choiceButtons").appendChild(btn); 
+  btn.setAttribute("data", choice);
+  btn.setAttribute("id", `btn${i}`); 
+  btn.setAttribute("answer", questions[count].answer);
+
+
+  document.querySelector(`#btn${i}`).addEventListener("click", function (e) { 
+    console.log(e.target.getAttribute("data"));
+    if (e.target.getAttribute("data") === e.target.getAttribute("answer")) { 
+      answeredRight(); 
+    } else {
+      answeredWrong(); 
+    }
+  });
+});
+};
+
+highscoreBtn.addEventListener("click", function(){
+  var hsList = JSON.parse(localStorage.getItem("Highscore")).highscoreArr || []; //The hsList variable is populated with the highscores array from local storage. It is parsed using JSON.parse and fallbacks to an empty array if no highscores are found.
+  var highscoreDisp = document.getElementById("highscoreDisp"); //his element represents the container where the highscores will be displayed.
+
+  startOverScreen.style.display = "none";
+  startDiv.style.display = "none";
+
+  if (scoresDiv.style.display === "none") {  //f the scoresDiv is currently hidden (style.display === "none"), the highscores should be displayed. The highscoreDisp container is cleared by setting its innerHTML to an empty string.
+    scoresDiv.style.display = "flex";
+    // highscoreDisp.innerHTML = ""; // clear the previous highscores
+
+    hsList.forEach(function (score) {  //A forEach loop is used to iterate over the hsList array. For each highscore, the initials and score are extracted by splitting the string on the space character.
+      var initials = score.split(" ")[0];
+      var scoreValue = score.split(" ")[1];
+
+      var scoreElement = document.createElement("h3"); //For each highscore, a new h3 element is created using document.createElement("h3"). Inside this element, the initials, a hyphen, and the score value are added as separate elements (span and text nodes).
+      var initialsElement = document.createElement("span");
+      var scoreValueElement = document.createElement("span");
+
+      initialsElement.textContent = initials;
+      scoreValueElement.textContent = scoreValue;
+
+      scoreElement.appendChild(initialsElement); //The elements representing initials and score value are appended as children to the h3 element, and the h3 element is appended to the highscoreDisp container.
+      scoreElement.appendChild(document.createTextNode(" - "));
+      scoreElement.appendChild(scoreValueElement);
+
+      highscoreDisp.appendChild(scoreElement);
+    });
+  } else {
+    scoresDiv.style.display = "none"; //If the scoresDiv is already displayed (style.display !== "none"), it means the highscores are currently visible. In this case, the scoresDiv is hidden by setting its style.display to "none".
+
+  } 
+  }
+);
+
+
+var timerSpan = document.querySelector("#timer");
+var startDiv = document.querySelector("#startDiv");
+var quizDiv = document.querySelector("#quizDiv");
+var endQuiz = document.querySelector("#endQuiz");
+
+startButton.addEventListener("click", function () {
+console.log(totalTime);
+startDiv.style.display = "none";
+quizDiv.style.display = "block";
+generateQuestions();
+
+var interval = setInterval(function () {
+  totalTime--;
+  timerSpan.innerHTML = totalTime;
+  console.log("countdown... " + totalTime);
+  if (totalTime === 0 || lastQ) {
+    clearInterval(interval);
+    console.log("Time's up");
+    endGame();
+  }
+}, 1000);
+
+});
+

@@ -11,7 +11,11 @@ body {
     padding: 20px;
   }
   
-  header{
+  h1, h3, h5 {
+    text-align: center;
+  }
+
+header{
     margin:auto;
 
 }
@@ -20,39 +24,71 @@ header a{
     margin-left: 10px;
 }
 
-.time{
-    margin-right: 10px;
+#timerDiv {
     float: right;
 }
-  /* header{ 
-    border: 3px solid blue;
-  }
 
-  ul{
-    list-style: none;
-    display: inline;
-  }
-  .nav{
-    border: 3px solid orange;
-    margin-right: 800px;
-  }
+.card {
+  background-color: white;
+  width: 100%;
+  margin: 10px auto;
+  text-align: center;
+}
 
-  .nav #highscore-link {
-    
-  }
-*/
-  .quiz-container {
+.card-header{
+
+}
+
+.card-body {
+  padding: 10px 40px;
+}
+
+.card-footer{
+  font-size: 28px;
+}
+
+#btn0, #btn1, #btn2, #btn3 {
+  padding: 10px;
+  margin: 10px;
+  /* position: relative; */
+  font-size: 18px;
+  background-color: blue;
+  border: none;
+  border-radius: 5px;
+  color: white;
+}
+
+.quiz-container {
     text-align: center;
     background-color: #fff;
     padding: 20px;
     margin: 10px 300px;
   }
 
-  .quiz-container h1{
-    margin-bottom: 10px;
+  #quizQ-header{
+   font-size: 26px;
+   text-align: center;
+  }
+
+  #quizDiv, #endQuiz, #startOver, #scoresDiv {
+    display: none;
+  }
+
+  #startDiv{
+    height: 350px;
+    width: 100%;
+    padding: 20px;
+    margin: 20px 0px 20px 0px;
+    position: relative;
+    font-size: 18px;
+    letter-spacing: 1px;
   }
   
   h2 {
+    margin-top: 0;
+  }
+
+  h3 {
     margin-top: 0;
   }
   
@@ -80,7 +116,18 @@ header a{
     margin: 10px 550px;
   }
   
-  button#start-button:hover {
+  #start-button:hover {
     background-color: #45a049;
   }
   
+  #submit, #restart {
+    margin: 20px;
+    height: 50px;
+    padding: 5px;
+    width: 150px;
+  }
+
+  #highscores{
+    background-color: white;
+    color: blue;
+  }
